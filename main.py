@@ -65,7 +65,7 @@ class Comment(db.Model):
 
 
 # Create all the tables in the database (only needed once because only need to create database once)
-# db.create_all()
+db.create_all()
 
 
 @app.route('/')
