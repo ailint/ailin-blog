@@ -157,11 +157,13 @@ def show_post(post_id):
             flash("You need to login or register to comment.")
             return redirect(url_for("login"))
 
+        # default: mp=mystery person(a person outline), identicon=geometric pattern
+
         gravatar = Gravatar(
             app,
             size=100,
             rating='g',
-            default='mp',
+            default='identicon',
             force_default=False,
             force_lower=False,
             use_ssl=False,
