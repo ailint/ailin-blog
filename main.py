@@ -10,6 +10,7 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from functools import wraps
 from flask_gravatar import Gravatar
 import os
+import smtplib
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
@@ -188,9 +189,32 @@ def about():
 
 
 # Contact page
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    MY_EMAIL = os.environ.get("MY_EMAIL")
+    MY_PASSWORD = os.environ.get("MY_PASSWORD")
+    if request.method == "POST":
+        data = request.form
+        name = data["name"]
+        email = data["email"]
+        phone = data["phone"]
+        message = data["message"]
+
+        # Establish connection and send email using smtplib
+        connection = smtplib.SMTP("smtp.gmail.com", port=587)
+        connection.starttls()
+        connection.login(MY_EMAIL, MY_PASSWORD)
+        connection.sendmail(
+            from_addr=MY_EMAIL,
+            to_addrs=MY_EMAIL,
+            msg=f"Subject:Blog Message From {name}\n\n"
+                f"Name: {name}\n"
+                f"Email: {email}\n"
+                f"Phone: {phone}\n"
+                f"Message: {message}"
+        )
+        return render_template("contact.html", msg_sent=True)
+    return render_template("contact.html", msg_sent=False)
 
 
 # Create admin-only decorator
