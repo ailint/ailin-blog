@@ -153,23 +153,23 @@ def show_post(post_id):
     form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
 
+    gravatar = Gravatar(
+        app,
+        size=100,
+        rating='g',
+        default='identicon',
+        force_default=False,
+        force_lower=False,
+        use_ssl=False,
+        base_url=None
+    )
+
     if form.validate_on_submit():
         if not current_user.is_authenticated:
             flash("You need to login or register to comment.")
             return redirect(url_for("login"))
 
         # default: mp=mystery person(a person outline), identicon=geometric pattern
-
-        gravatar = Gravatar(
-            app,
-            size=100,
-            rating='g',
-            default='identicon',
-            force_default=False,
-            force_lower=False,
-            use_ssl=False,
-            base_url=None
-        )
 
         new_comment = Comment(
             text=form.comment.data,
@@ -191,8 +191,8 @@ def about():
 # Contact page
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
-    MY_EMAIL = os.environ.get("MY_EMAIL")
-    MY_PASSWORD = os.environ.get("MY_PASSWORD")
+    my_email = os.environ.get("MY_EMAIL")
+    my_password = os.environ.get("MY_PASSWORD")
     if request.method == "POST":
         data = request.form
         name = data["name"]
@@ -203,10 +203,10 @@ def contact():
         # Establish connection and send email using smtplib
         connection = smtplib.SMTP("smtp.gmail.com", port=587)
         connection.starttls()
-        connection.login(MY_EMAIL, MY_PASSWORD)
+        connection.login(my_email, my_password)
         connection.sendmail(
-            from_addr=MY_EMAIL,
-            to_addrs=MY_EMAIL,
+            from_addr=my_email,
+            to_addrs=my_email,
             msg=f"Subject:Blog Message From {name}\n\n"
                 f"Name: {name}\n"
                 f"Email: {email}\n"
