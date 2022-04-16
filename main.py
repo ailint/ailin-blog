@@ -230,6 +230,7 @@ def admin_only(f):
     return decorated_function
 
 
+# Create a new post
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():
@@ -250,6 +251,7 @@ def add_new_post():
     return render_template("make-post.html", form=form, current_user=current_user)
 
 
+# Edit an existing post
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 @admin_only
 def edit_post(post_id):
@@ -272,6 +274,7 @@ def edit_post(post_id):
     return render_template("make-post.html", form=edit_form, is_edit=True, current_user=current_user)
 
 
+# Delete an existing post
 @app.route("/delete/<int:post_id>")
 @admin_only
 def delete_post(post_id):
