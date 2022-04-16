@@ -153,6 +153,7 @@ def show_post(post_id):
     form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
 
+    # default: mp=mystery person(a person outline), identicon=geometric pattern
     gravatar = Gravatar(
         app,
         size=100,
@@ -168,8 +169,6 @@ def show_post(post_id):
         if not current_user.is_authenticated:
             flash("You need to login or register to comment.")
             return redirect(url_for("login"))
-
-        # default: mp=mystery person(a person outline), identicon=geometric pattern
 
         new_comment = Comment(
             text=form.comment.data,
@@ -241,7 +240,7 @@ def add_new_post():
             subtitle=form.subtitle.data,
             body=form.body.data,
             img_url=form.img_url.data,
-            author=current_user,
+            author=form.author.name.data,
             date=date.today().strftime("%B %d, %Y")
         )
         db.session.add(new_post)
@@ -260,12 +259,13 @@ def edit_post(post_id):
         title=post.title,
         subtitle=post.subtitle,
         img_url=post.img_url,
-        author=current_user,
+        author=post.author.name,
         body=post.body
     )
     if edit_form.validate_on_submit():
         post.title = edit_form.title.data
         post.subtitle = edit_form.subtitle.data
+        post.author = edit_form.author.data
         post.img_url = edit_form.img_url.data
         post.body = edit_form.body.data
         db.session.commit()
