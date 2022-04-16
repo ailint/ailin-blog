@@ -153,6 +153,7 @@ def show_post(post_id):
     form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
 
+    # default: mp=mystery person(a person outline), identicon=geometric pattern
     gravatar = Gravatar(
         app,
         size=100,
@@ -168,8 +169,6 @@ def show_post(post_id):
         if not current_user.is_authenticated:
             flash("You need to login or register to comment.")
             return redirect(url_for("login"))
-
-        # default: mp=mystery person(a person outline), identicon=geometric pattern
 
         new_comment = Comment(
             text=form.comment.data,
